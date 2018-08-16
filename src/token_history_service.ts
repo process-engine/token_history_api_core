@@ -23,7 +23,10 @@ export class TokenHistoryService implements ITokenHistoryService {
   }
 
   // TODO: Add claim checks as soon as required claims have been defined.
-  public async getTokensForFlowNodeInstance(identity: IIdentity, flowNodeInstanceId: string): Promise<Array<TokenHistoryEntry>> {
+  public async getTokensForFlowNodeInstance(identity: IIdentity,
+                                            correlationId: string,
+                                            processModelId: string,
+                                            flowNodeInstanceId: string): Promise<Array<TokenHistoryEntry>> {
 
     // TODO: Implement method in FlowNodeInstanceRepository.
     // const matchingInstances: any =
