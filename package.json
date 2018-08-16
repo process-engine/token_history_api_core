@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/process-engine/token_history_api_core#readme",
   "dependencies": {
+    "@process-engine/process_engine_contracts": "feature~store_enter_and_exit_token_separately",
+    "@process-engine/token_history_api_contracts": "feature~initial_implementation"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "1.0.0",
