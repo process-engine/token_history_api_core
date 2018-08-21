@@ -1,1 +1,1 @@
-export * from './token_history_service';
+export * from './token_history_api_service';
