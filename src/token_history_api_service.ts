@@ -1,4 +1,4 @@
-import {ITokenHistoryApiService, TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
+import {ITokenHistoryApiService, TokenHistoryEntry, TokenType} from '@process-engine/token_history_api_contracts';
 
 import {IFlowNodeInstanceRepository, Runtime} from '@process-engine/process_engine_contracts';
 
@@ -28,9 +28,25 @@ export class TokenHistoryApiService implements ITokenHistoryApiService {
                                     processModelId: string,
                                     flowNodeId: string): Promise<Array<TokenHistoryEntry>> {
 
-    // TODO: Implement method in FlowNodeInstanceRepository.
-    // const results: any = await this.flowNodeInstanceRepository.queryByFlowNodeId(flowNodeId, Runtime.Types.FlowNodeInstanceState.finished);
+    const flowNodeInstance: Runtime.Types.FlowNodeInstance = await this.flowNodeInstanceRepository.queryByFlowNodeId(flowNodeId);
 
-    return Promise.resolve([]);
+    const tokenHistory: Array<TokenHistoryEntry> = flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
+
+      const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
+      tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
+      tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
+      tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
+      tokenHistoryEntry.processModelId = fniToken.processModelId;
+      tokenHistoryEntry.correlationId = fniToken.correlationId;
+      tokenHistoryEntry.tokenType = TokenType[fniToken.type];
+      tokenHistoryEntry.identity = fniToken.identity;
+      tokenHistoryEntry.createdAt = fniToken.createdAt;
+      tokenHistoryEntry.caller = fniToken.caller;
+      tokenHistoryEntry.payload = fniToken.payload;
+
+      return tokenHistoryEntry;
+    });
+
+    return tokenHistory;
   }
 }
