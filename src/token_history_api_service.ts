@@ -1,4 +1,4 @@
-import {ITokenHistoryApiService, TokenHistoryEntry, TokenType} from '@process-engine/token_history_api_contracts';
+import {ITokenHistoryApiService, TokenEventType, TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
 
 import {IFlowNodeInstanceRepository, Runtime} from '@process-engine/process_engine_contracts';
 
@@ -38,7 +38,7 @@ export class TokenHistoryApiService implements ITokenHistoryApiService {
       tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
       tokenHistoryEntry.processModelId = fniToken.processModelId;
       tokenHistoryEntry.correlationId = fniToken.correlationId;
-      tokenHistoryEntry.tokenType = TokenType[fniToken.type];
+      tokenHistoryEntry.tokenEventType = TokenEventType[fniToken.type];
       tokenHistoryEntry.identity = fniToken.identity;
       tokenHistoryEntry.createdAt = fniToken.createdAt;
       tokenHistoryEntry.caller = fniToken.caller;
