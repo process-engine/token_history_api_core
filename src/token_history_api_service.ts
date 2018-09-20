@@ -1,10 +1,10 @@
-import {ITokenHistoryApiService, TokenEventType, TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
+import {ITokenHistoryApi, TokenEventType, TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
 
 import {IFlowNodeInstanceRepository, Runtime} from '@process-engine/process_engine_contracts';
 
 import {IIAMService, IIdentity} from '@essential-projects/iam_contracts';
 
-export class TokenHistoryApiService implements ITokenHistoryApiService {
+export class TokenHistoryApiService implements ITokenHistoryApi {
 
   private _iamService: IIAMService;
   private _flowNodeInstanceRepository: IFlowNodeInstanceRepository;
