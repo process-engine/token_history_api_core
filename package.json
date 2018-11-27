@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/token_history_api_core",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Contains all the core components for the token_history api. ",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -35,8 +35,6 @@
   "scripts": {
     "build": "gulp build",
     "prepare": "npm run build",
-    "build-doc": "gulp doc",
-    "build-schemas": "gulp typescript-schema",
     "lint": "gulp lint",
     "test": "gulp test"
   }
