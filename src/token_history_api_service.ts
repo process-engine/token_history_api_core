@@ -81,6 +81,6 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
         return tokenHistoryEntries;
       });
 
-      return tokenHistory;
+      return tokenHistories;
     }
 }
