@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/process-engine/token_history_api_core#readme",
   "dependencies": {
-    "@process-engine/process_engine_contracts": "~34.2.0",
+    "@process-engine/process_engine_contracts": "35.0.0",
     "@process-engine/token_history_api_contracts": "feature~improve_getting-token-for-correlation-and-processmodel"
   },
   "devDependencies": {
