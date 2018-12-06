@@ -66,7 +66,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
 
     const tokenHistories: Map<string, Array<TokenHistoryEntry>> = new Map();
 
-    flowNodeInstances.map((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
+    flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
       const tokenHistoryEntries: Array<TokenHistoryEntry> =
         flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
 
