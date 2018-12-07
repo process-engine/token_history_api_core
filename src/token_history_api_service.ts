@@ -1,4 +1,9 @@
-import {ITokenHistoryApi, TokenEventType, TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
+import {
+  ITokenHistoryApi,
+  TokenEventType,
+  TokenHistoryEntry,
+  TokenHistoryGroup,
+} from '@process-engine/token_history_api_contracts';
 
 import {IFlowNodeInstanceRepository, Runtime} from '@process-engine/process_engine_contracts';
 
@@ -51,36 +56,40 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     return tokenHistory;
   }
 
-    // TODO: Add claim checks as soon as required claims have been defined.
-    public async getTokensForCorrelationAndProcessModel(identity: IIdentity,
-                                                        correlationId: string,
-                                                        processModelId: string): Promise<Array<Array<TokenHistoryEntry>>> {
+  // TODO: Add claim checks as soon as required claims have been defined.
+  public async getTokensForCorrelationAndProcessModel(identity: IIdentity,
+                                                      correlationId: string,
+                                                      processModelId: string): Promise<TokenHistoryGroup> {
 
-      const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
-        await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
+    const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
+      await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
 
-      const tokenHistories: Array<Array<TokenHistoryEntry>> = flowNodeInstances.map((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
-        const tokenHistoryEntries: Array<TokenHistoryEntry> =
-          flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
+    const tokenHistories: TokenHistoryGroup = {};
 
-            const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
-            tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
-            tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
-            tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
-            tokenHistoryEntry.processModelId = fniToken.processModelId;
-            tokenHistoryEntry.correlationId = fniToken.correlationId;
-            tokenHistoryEntry.tokenEventType = TokenEventType[fniToken.type];
-            tokenHistoryEntry.identity = fniToken.identity;
-            tokenHistoryEntry.createdAt = fniToken.createdAt;
-            tokenHistoryEntry.caller = fniToken.caller;
-            tokenHistoryEntry.payload = fniToken.payload;
+    flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
 
-            return tokenHistoryEntry;
-          });
+      const tokenHistoryEntries: Array<TokenHistoryEntry> =
+        flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
 
-        return tokenHistoryEntries;
-      });
+          const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
+          tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
+          tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
+          tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
+          tokenHistoryEntry.processModelId = fniToken.processModelId;
+          tokenHistoryEntry.correlationId = fniToken.correlationId;
+          tokenHistoryEntry.tokenEventType = TokenEventType[fniToken.type];
+          tokenHistoryEntry.identity = fniToken.identity;
+          tokenHistoryEntry.createdAt = fniToken.createdAt;
+          tokenHistoryEntry.caller = fniToken.caller;
+          tokenHistoryEntry.payload = fniToken.payload;
 
-      return tokenHistories;
-    }
+          return tokenHistoryEntry;
+        });
+
+      const flowNodeId: string = flowNodeInstance.flowNodeId;
+      tokenHistories[flowNodeId] = tokenHistoryEntries;
+    });
+
+    return tokenHistories;
+  }
 }
