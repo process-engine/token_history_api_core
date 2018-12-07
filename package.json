@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/token_history_api_core",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Contains all the core components for the token_history api. ",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/process-engine/token_history_api_core#readme",
   "dependencies": {
-    "@process-engine/process_engine_contracts": "~34.2.0",
-    "@process-engine/token_history_api_contracts": "~1.1.0"
+    "@process-engine/process_engine_contracts": "~35.0.0",
+    "@process-engine/token_history_api_contracts": "~1.2.0"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
