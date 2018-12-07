@@ -64,9 +64,10 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
       await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
 
-    const tokenHistories: Map<string, Array<TokenHistoryEntry>> = new Map();
+    const tokenHistories: TokenHistoryGroup = {};
 
     flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
+
       const tokenHistoryEntries: Array<TokenHistoryEntry> =
         flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
 
@@ -85,8 +86,8 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
           return tokenHistoryEntry;
         });
 
-      const flowNodeId: string = tokenHistoryEntries[0].flowNodeId;
-      tokenHistories.set(flowNodeId, tokenHistoryEntries);
+      const flowNodeId: string = flowNodeInstance.flowNodeId;
+      tokenHistories[flowNodeId] = tokenHistoryEntries;
     });
 
     return tokenHistories;
