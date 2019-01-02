@@ -92,4 +92,39 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
 
     return tokenHistories;
   }
+
+    // TODO: Add claim checks as soon as required claims have been defined.
+    public async getTokensForProcessInstance(identity: IIdentity,
+                                             processInstanceId: string): Promise<TokenHistoryGroup> {
+
+      const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
+        await this.flowNodeInstanceRepository.queryByProcessInstanceId(processInstanceId);
+
+      const tokenHistories: TokenHistoryGroup = {};
+
+      flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
+        const tokenHistoryEntries: Array<TokenHistoryEntry> =
+          flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
+
+            const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
+            tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
+            tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
+            tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
+            tokenHistoryEntry.processModelId = fniToken.processModelId;
+            tokenHistoryEntry.correlationId = fniToken.correlationId;
+            tokenHistoryEntry.tokenEventType = TokenEventType[fniToken.type];
+            tokenHistoryEntry.identity = fniToken.identity;
+            tokenHistoryEntry.createdAt = fniToken.createdAt;
+            tokenHistoryEntry.caller = fniToken.caller;
+            tokenHistoryEntry.payload = fniToken.payload;
+
+            return tokenHistoryEntry;
+          });
+
+        const flowNodeId: string = tokenHistoryEntries[0].flowNodeId;
+        tokenHistories[flowNodeId] = tokenHistoryEntries;
+      });
+
+      return tokenHistories;
+    }
 }
