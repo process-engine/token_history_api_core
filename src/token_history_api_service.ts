@@ -121,7 +121,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
             return tokenHistoryEntry;
           });
 
-        const flowNodeId: string = tokenHistoryEntries[0].flowNodeId;
+        const flowNodeId: string = flowNodeInstance.flowNodeId;
         tokenHistories[flowNodeId] = tokenHistoryEntries;
       });
 
