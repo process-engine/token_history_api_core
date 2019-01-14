@@ -36,6 +36,50 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     const flowNodeInstance: Runtime.Types.FlowNodeInstance =
       await this.flowNodeInstanceRepository.querySpecificFlowNode(correlationId, processModelId, flowNodeId);
 
+    const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+
+    return tokenHistory;
+  }
+
+  // TODO: Add claim checks as soon as required claims have been defined.
+  public async getTokensForCorrelationAndProcessModel(identity: IIdentity,
+                                                      correlationId: string,
+                                                      processModelId: string): Promise<TokenHistoryGroup> {
+
+    const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
+      await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
+
+    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+
+    return tokenHistories;
+  }
+
+  // TODO: Add claim checks as soon as required claims have been defined.
+  public async getTokensForProcessInstance(identity: IIdentity,
+                                           processInstanceId: string): Promise<TokenHistoryGroup> {
+
+    const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
+      await this.flowNodeInstanceRepository.queryByProcessInstanceId(processInstanceId);
+
+    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+
+    return tokenHistories;
+  }
+
+  private _createTokenHistories(flowNodeInstances: Array<Runtime.Types.FlowNodeInstance>): TokenHistoryGroup {
+    const tokenHistories: TokenHistoryGroup = {};
+
+    flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
+      const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+
+      const flowNodeId: string = flowNodeInstance.flowNodeId;
+      tokenHistories[flowNodeId] = tokenHistory;
+    });
+
+    return tokenHistories;
+  }
+
+  private _getTokenHistoryForFlowNode(flowNodeInstance: Runtime.Types.FlowNodeInstance): Array<TokenHistoryEntry> {
     const tokenHistory: Array<TokenHistoryEntry> = flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
 
       const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
@@ -54,42 +98,5 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     });
 
     return tokenHistory;
-  }
-
-  // TODO: Add claim checks as soon as required claims have been defined.
-  public async getTokensForCorrelationAndProcessModel(identity: IIdentity,
-                                                      correlationId: string,
-                                                      processModelId: string): Promise<TokenHistoryGroup> {
-
-    const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
-      await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
-
-    const tokenHistories: TokenHistoryGroup = {};
-
-    flowNodeInstances.forEach((flowNodeInstance: Runtime.Types.FlowNodeInstance) => {
-
-      const tokenHistoryEntries: Array<TokenHistoryEntry> =
-        flowNodeInstance.tokens.map((fniToken: Runtime.Types.ProcessToken): TokenHistoryEntry => {
-
-          const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
-          tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
-          tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
-          tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
-          tokenHistoryEntry.processModelId = fniToken.processModelId;
-          tokenHistoryEntry.correlationId = fniToken.correlationId;
-          tokenHistoryEntry.tokenEventType = TokenEventType[fniToken.type];
-          tokenHistoryEntry.identity = fniToken.identity;
-          tokenHistoryEntry.createdAt = fniToken.createdAt;
-          tokenHistoryEntry.caller = fniToken.caller;
-          tokenHistoryEntry.payload = fniToken.payload;
-
-          return tokenHistoryEntry;
-        });
-
-      const flowNodeId: string = flowNodeInstance.flowNodeId;
-      tokenHistories[flowNodeId] = tokenHistoryEntries;
-    });
-
-    return tokenHistories;
   }
 }
