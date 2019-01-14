@@ -59,7 +59,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
                                            processInstanceId: string): Promise<TokenHistoryGroup> {
 
     const flowNodeInstances: Array<Runtime.Types.FlowNodeInstance> =
-      await this.flowNodeInstanceRepository.queryByProcessInstanceId(processInstanceId);
+      await this.flowNodeInstanceRepository.queryByProcessInstance(processInstanceId);
 
     const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
 
