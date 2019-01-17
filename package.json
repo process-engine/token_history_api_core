@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/token_history_api_core",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Contains all the core components for the token_history api. ",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
