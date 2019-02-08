@@ -85,6 +85,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
       const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
       tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
       tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
+      tokenHistoryEntry.previousFlowNodeInstanceId = flowNodeInstance.previousFlowNodeInstanceId;
       tokenHistoryEntry.processInstanceId = fniToken.processInstanceId;
       tokenHistoryEntry.processModelId = fniToken.processModelId;
       tokenHistoryEntry.correlationId = fniToken.correlationId;
