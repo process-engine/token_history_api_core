@@ -19,14 +19,6 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     this._flowNodeInstanceRepository = flowNodeInstanceRepository;
   }
 
-  private get iamService(): IIAMService {
-    return this._iamService;
-  }
-
-  private get flowNodeInstanceRepository(): IFlowNodeInstanceRepository {
-    return this._flowNodeInstanceRepository;
-  }
-
   // TODO: Add claim checks as soon as required claims have been defined.
   public async getTokensForFlowNode(
     identity: IIdentity,
@@ -36,7 +28,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
   ): Promise<Array<TokenHistoryEntry>> {
 
     const flowNodeInstance: FlowNodeInstance =
-      await this.flowNodeInstanceRepository.querySpecificFlowNode(correlationId, processModelId, flowNodeId);
+      await this._flowNodeInstanceRepository.querySpecificFlowNode(correlationId, processModelId, flowNodeId);
 
     const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
 
@@ -51,7 +43,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
   ): Promise<TokenHistoryGroup> {
 
     const flowNodeInstances: Array<FlowNodeInstance> =
-      await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
+      await this._flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
 
     const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
 
@@ -62,7 +54,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
   public async getTokensForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<TokenHistoryGroup> {
 
     const flowNodeInstances: Array<FlowNodeInstance> =
-      await this.flowNodeInstanceRepository.queryByProcessInstance(processInstanceId);
+      await this._flowNodeInstanceRepository.queryByProcessInstance(processInstanceId);
 
     const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
 
