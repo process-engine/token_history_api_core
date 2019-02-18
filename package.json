@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/process-engine/token_history_api_core#readme",
   "dependencies": {
-    "@process-engine/flow_node_instance.contracts": "feature~implement_new_persistence_layer",
+    "@process-engine/flow_node_instance.contracts": "feature~initial_implementation",
     "@process-engine/token_history_api_contracts": "~1.4.0"
   },
   "devDependencies": {
