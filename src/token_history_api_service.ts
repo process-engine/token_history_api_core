@@ -35,6 +35,20 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     return tokenHistory;
   }
 
+  public async getTokensForFlowNodeByProcessInstanceId(
+    identity: IIdentity,
+    processInstanceId: string,
+    flowNodeId: string,
+  ): Promise<Array<TokenHistoryEntry>> {
+
+    const flowNodeInstance: FlowNodeInstance =
+      await this._flowNodeInstanceRepository.querySpecificFlowNodeByProcessInstanceId(processInstanceId, flowNodeId);
+
+    const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+
+    return tokenHistory;
+  }
+
   // TODO: Add claim checks as soon as required claims have been defined.
   public async getTokensForCorrelationAndProcessModel(
     identity: IIdentity,
