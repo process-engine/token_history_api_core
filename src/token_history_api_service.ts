@@ -39,14 +39,14 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     identity: IIdentity,
     processInstanceId: string,
     flowNodeId: string,
-  ): Promise<Array<TokenHistoryEntry>> {
+  ): Promise<TokenHistoryGroup> {
 
-    const flowNodeInstance: FlowNodeInstance =
-      await this._flowNodeInstanceRepository.querySpecificFlowNodeByProcessInstanceId(processInstanceId, flowNodeId);
+    const flowNodeInstances: Array<FlowNodeInstance> =
+      await this._flowNodeInstanceRepository.queryFlowNodesByProcessInstanceId(processInstanceId, flowNodeId);
 
-    const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
 
-    return tokenHistory;
+    return tokenHistories;
   }
 
   // TODO: Add claim checks as soon as required claims have been defined.
