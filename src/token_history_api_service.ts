@@ -82,7 +82,15 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
       const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
 
       const flowNodeId: string = flowNodeInstance.flowNodeId;
-      tokenHistories[flowNodeId] = tokenHistory;
+
+      const flowNodeIdExist: boolean = tokenHistories[flowNodeId] !== null
+                                    && tokenHistories[flowNodeId] !== undefined;
+
+      if (flowNodeIdExist) {
+        tokenHistories[flowNodeId].push(...tokenHistory);
+      } else {
+        tokenHistories[flowNodeId] = tokenHistory;
+      }
     });
 
     return tokenHistories;
