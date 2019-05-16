@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/process-engine/token_history_api_core#readme",
   "dependencies": {
-    "@process-engine/flow_node_instance.contracts": "feature~add_getTokenForFlowNodeByProcessInstanceId",
-    "@process-engine/token_history_api_contracts": "feature~add_getTokenForFlowNodeByProcessInstanceId"
+    "@process-engine/flow_node_instance.contracts": "1.2.0-9537af2d-b6",
+    "@process-engine/token_history_api_contracts": "1.4.2-57371b44-b6"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.5",
