@@ -35,6 +35,20 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     return tokenHistory;
   }
 
+  public async getTokensForFlowNodeByProcessInstanceId(
+    identity: IIdentity,
+    processInstanceId: string,
+    flowNodeId: string,
+  ): Promise<TokenHistoryGroup> {
+
+    const flowNodeInstances: Array<FlowNodeInstance> =
+      await this._flowNodeInstanceRepository.queryFlowNodeInstancesByProcessInstanceId(processInstanceId, flowNodeId);
+
+    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+
+    return tokenHistories;
+  }
+
   // TODO: Add claim checks as soon as required claims have been defined.
   public async getTokensForCorrelationAndProcessModel(
     identity: IIdentity,
@@ -68,7 +82,15 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
       const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
 
       const flowNodeId: string = flowNodeInstance.flowNodeId;
-      tokenHistories[flowNodeId] = tokenHistory;
+
+      const flowNodeIdExist: boolean = tokenHistories[flowNodeId] !== null
+                                    && tokenHistories[flowNodeId] !== undefined;
+
+      if (flowNodeIdExist) {
+        tokenHistories[flowNodeId].push(...tokenHistory);
+      } else {
+        tokenHistories[flowNodeId] = tokenHistory;
+      }
     });
 
     return tokenHistories;
