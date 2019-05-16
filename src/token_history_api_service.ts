@@ -80,30 +80,6 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
 
     flowNodeInstances.forEach((flowNodeInstance: FlowNodeInstance) => {
       const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
-      tokenHistory.sort((first: TokenHistoryEntry, second: TokenHistoryEntry) => {
-
-        const firstTypeIsOnEnter: boolean = first.tokenEventType === TokenEventType.onEnter;
-        const firstTypeIsOnExit: boolean = first.tokenEventType === TokenEventType.onExit;
-        const firstTypeIsOnResume: boolean = first.tokenEventType === TokenEventType.onResume;
-        const secondTypeIsOnResume: boolean = second.tokenEventType === TokenEventType.onResume;
-        const secondTypeIsOnSuspend: boolean = second.tokenEventType === TokenEventType.onSuspend;
-
-        if (firstTypeIsOnEnter) {
-          return -1;
-        }
-
-        if (firstTypeIsOnExit && secondTypeIsOnResume) {
-          return 1;
-        }
-
-        if (firstTypeIsOnExit && secondTypeIsOnSuspend) {
-          return 1;
-        }
-
-        if (firstTypeIsOnResume && secondTypeIsOnSuspend) {
-          return 1;
-        }
-      });
 
       const flowNodeId: string = flowNodeInstance.flowNodeId;
 
