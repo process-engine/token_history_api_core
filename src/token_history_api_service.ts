@@ -42,7 +42,7 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
   ): Promise<TokenHistoryGroup> {
 
     const flowNodeInstances: Array<FlowNodeInstance> =
-      await this._flowNodeInstanceRepository.queryFlowNodesByProcessInstanceId(processInstanceId, flowNodeId);
+      await this._flowNodeInstanceRepository.queryFlowNodeInstancesByProcessInstanceId(processInstanceId, flowNodeId);
 
     const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
 
