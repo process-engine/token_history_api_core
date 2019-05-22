@@ -11,12 +11,12 @@ import {IIAMService, IIdentity} from '@essential-projects/iam_contracts';
 
 export class TokenHistoryApiService implements ITokenHistoryApi {
 
-  private _iamService: IIAMService;
-  private _flowNodeInstanceRepository: IFlowNodeInstanceRepository;
+  private iamService: IIAMService;
+  private flowNodeInstanceRepository: IFlowNodeInstanceRepository;
 
   constructor(iamService: IIAMService, flowNodeInstanceRepository: IFlowNodeInstanceRepository) {
-    this._iamService = iamService;
-    this._flowNodeInstanceRepository = flowNodeInstanceRepository;
+    this.iamService = iamService;
+    this.flowNodeInstanceRepository = flowNodeInstanceRepository;
   }
 
   // TODO: Add claim checks as soon as required claims have been defined.
@@ -27,10 +27,9 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     flowNodeId: string,
   ): Promise<Array<TokenHistoryEntry>> {
 
-    const flowNodeInstance: FlowNodeInstance =
-      await this._flowNodeInstanceRepository.querySpecificFlowNode(correlationId, processModelId, flowNodeId);
+    const flowNodeInstance = await this.flowNodeInstanceRepository.querySpecificFlowNode(correlationId, processModelId, flowNodeId);
 
-    const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+    const tokenHistory = this.getTokenHistoryForFlowNode(flowNodeInstance);
 
     return tokenHistory;
   }
@@ -41,10 +40,9 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     flowNodeId: string,
   ): Promise<TokenHistoryGroup> {
 
-    const flowNodeInstances: Array<FlowNodeInstance> =
-      await this._flowNodeInstanceRepository.queryFlowNodeInstancesByProcessInstanceId(processInstanceId, flowNodeId);
+    const flowNodeInstances = await this.flowNodeInstanceRepository.queryFlowNodeInstancesByProcessInstanceId(processInstanceId, flowNodeId);
 
-    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+    const tokenHistories = this.createTokenHistories(flowNodeInstances);
 
     return tokenHistories;
   }
@@ -56,10 +54,9 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     processModelId: string,
   ): Promise<TokenHistoryGroup> {
 
-    const flowNodeInstances: Array<FlowNodeInstance> =
-      await this._flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
+    const flowNodeInstances = await this.flowNodeInstanceRepository.queryByCorrelationAndProcessModel(correlationId, processModelId);
 
-    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+    const tokenHistories = this.createTokenHistories(flowNodeInstances);
 
     return tokenHistories;
   }
@@ -67,24 +64,23 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
   // TODO: Add claim checks as soon as required claims have been defined.
   public async getTokensForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<TokenHistoryGroup> {
 
-    const flowNodeInstances: Array<FlowNodeInstance> =
-      await this._flowNodeInstanceRepository.queryByProcessInstance(processInstanceId);
+    const flowNodeInstances = await this.flowNodeInstanceRepository.queryByProcessInstance(processInstanceId);
 
-    const tokenHistories: TokenHistoryGroup = this._createTokenHistories(flowNodeInstances);
+    const tokenHistories = this.createTokenHistories(flowNodeInstances);
 
     return tokenHistories;
   }
 
-  private _createTokenHistories(flowNodeInstances: Array<FlowNodeInstance>): TokenHistoryGroup {
+  private createTokenHistories(flowNodeInstances: Array<FlowNodeInstance>): TokenHistoryGroup {
     const tokenHistories: TokenHistoryGroup = {};
 
-    flowNodeInstances.forEach((flowNodeInstance: FlowNodeInstance) => {
-      const tokenHistory: Array<TokenHistoryEntry> = this._getTokenHistoryForFlowNode(flowNodeInstance);
+    flowNodeInstances.forEach((flowNodeInstance: FlowNodeInstance): void => {
+      const tokenHistory = this.getTokenHistoryForFlowNode(flowNodeInstance);
 
-      const flowNodeId: string = flowNodeInstance.flowNodeId;
+      const flowNodeId = flowNodeInstance.flowNodeId;
 
-      const flowNodeIdExist: boolean = tokenHistories[flowNodeId] !== null
-                                    && tokenHistories[flowNodeId] !== undefined;
+      // eslint-disable-next-line no-null/no-null
+      const flowNodeIdExist = tokenHistories[flowNodeId] !== null && tokenHistories[flowNodeId] !== undefined;
 
       if (flowNodeIdExist) {
         tokenHistories[flowNodeId].push(...tokenHistory);
@@ -96,10 +92,10 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
     return tokenHistories;
   }
 
-  private _getTokenHistoryForFlowNode(flowNodeInstance: FlowNodeInstance): Array<TokenHistoryEntry> {
-    const tokenHistory: Array<TokenHistoryEntry> = flowNodeInstance.tokens.map((fniToken: ProcessToken): TokenHistoryEntry => {
+  private getTokenHistoryForFlowNode(flowNodeInstance: FlowNodeInstance): Array<TokenHistoryEntry> {
+    const tokenHistory = flowNodeInstance.tokens.map((fniToken: ProcessToken): TokenHistoryEntry => {
 
-      const tokenHistoryEntry: TokenHistoryEntry = new TokenHistoryEntry();
+      const tokenHistoryEntry = new TokenHistoryEntry();
       tokenHistoryEntry.flowNodeId = flowNodeInstance.flowNodeId;
       tokenHistoryEntry.flowNodeInstanceId = flowNodeInstance.id;
       tokenHistoryEntry.previousFlowNodeInstanceId = flowNodeInstance.previousFlowNodeInstanceId;
@@ -117,4 +113,5 @@ export class TokenHistoryApiService implements ITokenHistoryApi {
 
     return tokenHistory;
   }
+
 }
